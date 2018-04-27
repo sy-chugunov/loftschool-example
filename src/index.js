@@ -74,8 +74,8 @@ function returnCounter(number = 0) {
  Пример:
    returnArgumentsArray(1, 2, 3) вернет [1, 2, 3]
  */
-function returnArgumentsArray(...args) {
-    return args;
+function returnArgumentsArray() {
+    return [...arguments];
 }
 
 /*
