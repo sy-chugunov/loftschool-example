@@ -35,7 +35,8 @@ function map(array, fn) {
  Посмотрите как работает reduce и повторите это поведение для массива, который будет передан в параметре array
  */
 function reduce(array, fn, initial) {
-    let result, i = 0;
+    let result;
+    let i = 0;
 
     if (initial === undefined) {
         result = array[0];
@@ -74,7 +75,8 @@ function upperProps(obj) {
  Посмотрите как работает slice и повторите это поведение для массива, который будет передан в параметре array
  */
 function slice(array, from, to) {
-    let begin = 0, end = array.length;
+    let begin = 0;
+    let end = array.length;
     let result = [];
 
     if (from !== undefined) {
@@ -116,8 +118,9 @@ function slice(array, from, to) {
  */
 function createProxy(obj) {
     let handler = {
-        set: function (target, prop, value, receiver) {
+        set: function (target, prop, value) {
             target[prop] = value * value;
+            
             return true;
         }
     };
