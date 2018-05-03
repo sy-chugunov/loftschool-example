@@ -38,12 +38,12 @@ function reduce(array, fn, initial) {
     let result;
     let i;
 
-    if (!initial) {
-        result = array[0];
-        i = 1;
-    } else {
+    if (initial) {
         result = initial;
         i = 0;
+    } else {
+        result = array[0];
+        i = 1;
     }
 
     for (i; i < array.length; ++i) {
