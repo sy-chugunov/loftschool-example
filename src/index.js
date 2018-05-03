@@ -82,7 +82,7 @@ function slice(array, from = 0, to = array.length) {
         from = array.length + from;
     }
 
-    if (from < 0) {
+    if (from < 0 || !from) {
         from = 0;
     }
 
@@ -94,7 +94,7 @@ function slice(array, from = 0, to = array.length) {
         to = array.length + to;
     }
 
-    if (to < 0) {
+    if (to < 0 || !to) {
         to = 0;
     }
 
