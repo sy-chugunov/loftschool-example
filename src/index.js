@@ -36,13 +36,14 @@ function map(array, fn) {
  */
 function reduce(array, fn, initial) {
     let result;
-    let i = 0;
+    let i;
 
-    if (initial === undefined) {
+    if (!initial) {
         result = array[0];
         i = 1;
     } else {
         result = initial;
+        i = 0;
     }
 
     for (i; i < array.length; ++i) {
@@ -63,7 +64,7 @@ function reduce(array, fn, initial) {
 function upperProps(obj) {
     let keys = Object.keys(obj);
 
-    return keys.map(function(key) {
+    return keys.map(function (key) {
         return key.toUpperCase();
     });
 }
@@ -74,36 +75,34 @@ function upperProps(obj) {
  Напишите аналог встроенного метода slice для работы с массивами
  Посмотрите как работает slice и повторите это поведение для массива, который будет передан в параметре array
  */
-function slice(array, from, to) {
-    let begin = 0;
-    let end = array.length;
+function slice(array, from = 0, to = array.length) {
     let result = [];
 
-    if (from !== undefined) {
-        begin = from >= 0 ? from : array.length + from;
-
-        if (begin < 0) {
-            begin = 0;
-        }
-
-        if (begin > array.length) {
-            begin = array.length;
-        }
+    if (from < 0) {
+        from = array.length + from;
     }
 
-    if (to !== undefined) {
-        end = to >= 0 ? to : array.length + to;
-
-        if (end < 0) {
-            end = 0;
-        }
-
-        if (end > array.length) {
-            end = array.length;
-        }
+    if (from < 0) {
+        from = 0;
     }
 
-    for (let i = begin, j = 0; i < end; ++i, ++j) {
+    if (from > array.length) {
+        from = array.length;
+    }
+
+    if (to < 0) {
+        to = array.length + to;
+    }
+
+    if (to < 0) {
+        to = 0;
+    }
+
+    if (to > array.length) {
+        to = array.length;
+    }
+
+    for (let i = from, j = 0; i < to; ++i, ++j) {
         result[j] = array[i];
     }
 
@@ -120,11 +119,11 @@ function createProxy(obj) {
     let handler = {
         set: function (target, prop, value) {
             target[prop] = value * value;
-            
+
             return true;
         }
     };
-    
+
     return new Proxy(obj, handler);
 }
 
