@@ -162,28 +162,15 @@ function deleteTextNodesRecursive(where) {
    }
  */
 function collectDOMStat(root) {
-    function textNodeCount(element, count) {
-        let nodes = element.childNodes;
-
-        for (let node of nodes) {
-            if (node.childNodes.length > 0) {
-                count = textNodeCount(node, count);
-            } else if (node.nodeType === Node.TEXT_NODE) {
-                count++;
+    function getStats(element, count, classesObj, tagsObj, skip) {
+        if (element.nodeType === Node.ELEMENT_NODE) {
+            if (skip) {
+                skip = false;
+            } else if (element.nodeName in tagsObj) {
+                tagsObj[element.nodeName]++;
+            } else {
+                tagsObj[element.nodeName] = 1;
             }
-        }
-
-        return count;
-    }
-
-    function classesCount(element, classesObj) {
-        let nodes = element.childNodes;
-
-        for (let node of nodes) {
-            if (node.childNodes.length > 0) {
-                classesCount(node, classesObj);
-            }
-
         }
 
         let elementClasses = element.classList;
@@ -196,32 +183,24 @@ function collectDOMStat(root) {
             }
         }
 
-        return classesObj;
-    }
+        let nodes = element.childNodes;
 
-    function tagsCount(element, tagsObj, skipElement = false) {
-        if (!skipElement) {
-            if (element.nodeName in tagsObj) {
-                tagsObj[element.nodeName]++;
-            } else {
-                tagsObj[element.nodeName] = 1;
+        for (let node of nodes) {
+            if (node.childNodes.length > 0) {
+                count = getStats(node, count, classesObj, tagsObj, skip).texts;
+            } else if (node.nodeType === Node.TEXT_NODE) {
+                count++;
             }
         }
 
-        let nodes = element.children;
-
-        for (let node of nodes) {
-            tagsCount(node, tagsObj);
-        }
-
-        return tagsObj;
+        return {
+            'texts': count,
+            'classes': classesObj,
+            'tags': tagsObj
+        };
     }
 
-    let result = {};
-
-    result.texts = textNodeCount(root, 0);
-    result.classes = classesCount(root, {});
-    result.tags = tagsCount(root, {}, true);
+    let result = getStats(root, 0, {}, {}, true);
 
     return result;
 }
@@ -259,7 +238,19 @@ function collectDOMStat(root) {
    }
  */
 function observeChildNodes(where, fn) {
-    return fn(where);
+    var observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+            if (mutation.addedNodes.length > 0) {
+                fn({ 'type': 'insert', 'nodes': Array.from(mutation.addedNodes) });
+            } else if (mutation.removedNodes.length > 0) {
+                fn({ 'type': 'remove', 'nodes': Array.from(mutation.removedNodes) });
+            }
+        });
+    });
+
+    var options = { childList: true };
+
+    observer.observe(where, options);
 }
 
 export {
