@@ -48,6 +48,7 @@ function createDiv() {
     function getRandomColor() {
         var letters = '0123456789ABCDEF';
         var color = '#';
+
         for (var i = 0; i < 6; ++i) {
             color += letters[Math.floor(Math.random() * 16)];
         }
@@ -60,9 +61,11 @@ function createDiv() {
     let newDiv = document.createElement('div');
 
     newDiv.setAttribute('style',
-        `width: ${width}px; height: ${height}px; position: absolute; left: ${x}px; top: ${y}px; background-color: ${color};`);
+        `width: ${width}px; height: ${height}px; position: absolute;
+        left: ${x}px; top: ${y}px; background-color: ${color};`);
 
     newDiv.setAttribute('class', 'draggable-div');
+    newDiv.setAttribute('draggable', true);
 
     return newDiv;
 }
@@ -77,30 +80,27 @@ function createDiv() {
  */
 function addListeners() {
     let dragged;
+    let left;
+    let top;
 
-    /* events fired on the draggable target */
-    document.addEventListener("dragstart", function (event) {
-        console.log("dragstart");
+    document.addEventListener('dragstart', function (event) {
         dragged = event.target;
         dragged.style.opacity = 0.5;
+        left = event.clientX - Number.parseInt(dragged.style.left);
+        top = event.clientY - Number.parseInt(dragged.style.top);
     }, false);
 
-    document.addEventListener("dragend", function (event) {
-        console.log("dragend");
+    document.addEventListener('dragend', function () {
         dragged.style.opacity = 1;
     }, false);
 
-    /* events fired on the drop targets */
-    document.addEventListener("dragover", function (event) {
-        console.log("dragover");
-        // prevent default to allow drop
+    document.addEventListener('dragover', function (event) {
         event.preventDefault();
     }, false);
 
-    document.addEventListener("drop", function (event) {
-        console.log("drop");
-        dragged.style.left = `${event.clientX}px`;
-        dragged.style.top = `${event.clientY}px`;
+    document.addEventListener('drop', function (event) {
+        dragged.style.left = `${event.clientX - left}px`;
+        dragged.style.top = `${event.clientY - top}px`;
     }, false);
 }
 
