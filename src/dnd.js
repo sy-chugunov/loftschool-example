@@ -83,25 +83,34 @@ function addListeners() {
     let left;
     let top;
 
-    document.addEventListener('dragstart', function (event) {
-        dragged = event.target;
-        dragged.style.opacity = 0.5;
-        left = event.clientX - Number.parseInt(dragged.style.left);
-        top = event.clientY - Number.parseInt(dragged.style.top);
-    }, false);
+    document.ondragstart = function (event) {
+        if (event.target.localName === 'div') {
+            dragged = event.target;
+            dragged.style.opacity = 0.5;
+            left = event.clientX - Number.parseInt(dragged.style.left);
+            top = event.clientY - Number.parseInt(dragged.style.top);
+        }
+    }
 
-    document.addEventListener('dragend', function () {
-        dragged.style.opacity = 1;
-    }, false);
+    document.ondragend = function () {
+        if (dragged) {
+            dragged.style.opacity = 1;
+        }
+    }
 
-    document.addEventListener('dragover', function (event) {
-        event.preventDefault();
-    }, false);
+    document.ondragover = function (event) {
+        if (dragged) {
+            event.preventDefault();
+        }
+    }
 
-    document.addEventListener('drop', function (event) {
-        dragged.style.left = `${event.clientX - left}px`;
-        dragged.style.top = `${event.clientY - top}px`;
-    }, false);
+    document.ondrop = function (event) {
+        if (dragged) {
+            dragged.style.left = `${event.clientX - left}px`;
+            dragged.style.top = `${event.clientY - top}px`;
+            dragged = undefined;
+        }
+    }
 }
 
 addListeners();

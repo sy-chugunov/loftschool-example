@@ -83,9 +83,13 @@ function delegate(target, fn) {
    // добавит такой обработчик кликов для указанного элемента, который вызовется только один раз и затем удалится
  */
 function once(target, fn) {
-    let options = { 'once': true };
+    function callback() {
+        target.removeEventListener('click', callback);
+        
+        return fn();
+    }
 
-    target.addEventListener('click', fn, options);
+    target.addEventListener('click', callback);
 }
 
 export {
