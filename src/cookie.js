@@ -70,13 +70,13 @@ filterNameInput.addEventListener('keyup', function () {
         if (cookies.hasOwnProperty(name)) {
             let value = listTable.querySelector(`#name-${name}`);
             let row;
-    
+
             if (value) {
                 row = value.parentElement;
             } else {
                 continue;
             }
-    
+
             if (contains(name, part) || contains(cookies[name], part)) {
                 row.style.display = 'table-row';
             } else {
@@ -143,3 +143,21 @@ function addNewRow(visible) {
 
     listTable.appendChild(row);
 }
+
+function init() {
+    let cookies = getCookiesObj();
+
+    for (let name in cookies) {
+        if (cookies.hasOwnProperty(name) && name && cookies[name]) {
+            addNameInput.value = name;
+            addValueInput.value = cookies[name];
+
+            addButton.click();
+        }
+    }
+
+    addNameInput.value = '';
+    addValueInput.value = '';
+}
+
+init();
